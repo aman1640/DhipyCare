@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#007bff" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="DhipyCare" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="assets/img/homescreenicon.png" />
+  <title>DhipyCare</title>
+  <link rel="stylesheet" href="css/styles.css" />
+
+  <style>
+    /* Reset and full screen layout */
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+    }
+
+    /* Intro Video Section */
+    #intro {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      background: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Main Content Section */
+    #mainContent {
+      display: none;
+      height: 100%;
+      width: 100%;
+      background: #f8f9fa;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 3rem;
+      color: #333;
+    }
+
+    p {
+      font-size: 1.2rem;
+      color: #555;
+      max-width: 500px;
+      margin-bottom: 30px;
+    }
+
+    .btn {
+      text-decoration: none;
+      background: #007bff;
+      color: white;
+      padding: 12px 25px;
+      border-radius: 30px;
+      margin: 10px;
+      font-size: 1rem;
+      transition: background 0.3s ease;
+    }
+
+    .btn:hover {
+      background: #0056b3;
+    }
+
+    /* Google Sign-in button mobile bottom placement */
+    #googleSignInWrapper {
+      position: fixed;
+      bottom: 20px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      z-index: 999;
+    }
+
+    #googleSignInWrapper .btn {
+      width: 90%;
+      max-width: 350px;
+      text-align: center;
+    }
+
+    /* Responsive visibility rules */
+    @media (min-width: 768px) {
+      #googleSignInWrapper {
+        display: none; /* Hide bottom button on desktop */
+      }
+      #mainContent .google-desktop {
+        display: inline-block;
+      }
+    }
+
+    @media (max-width: 767px) {
+      #mainContent .google-desktop {
+        display: none; /* Hide center button on mobile */
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Intro Video Section -->
+  <div id="intro">
+    <video autoplay muted playsinline id="introVideo">
+      <source src="assets/video/intro.mp4" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+  </div>
+
+  <!-- Main Content -->
+  <div id="mainContent">
+    <h1>Welcome to DhipyCare</h1>
+    <p>We're building something amazing for your healthcare needs.<br />
+      Stay tuned – the full website is coming soon!</p>
+
+    <a href="#" class="btn">Notify Me</a>
+    <a href="https://instagram.com/yourpage" target="_blank" class="btn">Follow us on Instagram</a>
+
+    <!-- Shown only on desktop -->
+    <button onclick="signInWithGoogle()" class="btn google-desktop">Sign in with Google</button>
+  </div>
+
+  <!-- Shown only on mobile at bottom -->
+  <div id="googleSignInWrapper">
+    <button onclick="signInWithGoogle()" class="btn">Sign in with Google</button>
+  </div>
+
+  <!-- Firebase SDK & App Logic -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
+
+    // Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyC62wo52XfJDOBnJc6VAQDDbse3a-KKy-k",
+      authDomain: "dhipycare.firebaseapp.com",
+      projectId: "dhipycare",
+      storageBucket: "dhipycare.appspot.com", // Ensure this is correct if you use storage
+      messagingSenderId: "493427173597",
+      appId: "1:493427173597:web:379ad40ef8360df81ad334"
+    };
+
+    
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const video = document.getElementById('introVideo');
+    const introSection = document.getElementById('intro');
+    const mainContentSection = document.getElementById('mainContent');
+    let videoRedirectTimeoutId = null;
+
+    const redirectToLogin = () => {
+      console.log("Redirecting to index_login.html");
+      window.location.href = 'index_login.html';
+    };
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is signed in.
+        console.log("User already signed in. Redirecting to home.html");
+        if (videoRedirectTimeoutId) clearTimeout(videoRedirectTimeoutId);
+        if (video) video.removeEventListener('ended', redirectToLogin); // Clean up listener
+        window.location.href = "home.html";
+      } else {
+        // No user is signed in. Proceed with intro video.
+        console.log("No active user session. Playing intro video.");
+        if (introSection) introSection.style.display = 'flex'; // Ensure intro is visible
+        if (mainContentSection) mainContentSection.style.display = 'none'; // Ensure main content is hidden
+
+        if (video) {
+          video.addEventListener('ended', redirectToLogin);
+          video.play().catch(error => {
+            console.warn("Video autoplay failed or was prevented:", error);
+            // If video can't play, redirect after a shorter delay or show main content as fallback
+            // For now, we'll just redirect to login as per original logic for timeout.
+            redirectToLogin();
+          });
+          // Backup timeout (e.g., 7 seconds)
+          videoRedirectTimeoutId = setTimeout(redirectToLogin, 7000);
+        } else {
+          // No video element, or it failed to load, redirect to login immediately
+          console.log("No video element found or video error, redirecting to login page.");
+          redirectToLogin();
+        }
+      }
+    });
+
+    // Google login function - exposed to global scope for HTML onclick
+    window.signInWithGoogle = function() {
+      const provider = new GoogleAuthProvider();
+      signInWithPopup(auth, provider)
+        .then((result) => {
+          const user = result.user;
+          console.log("Signed in with Google as:", user.displayName);
+          // After Google sign-in, typically redirect to home or an info page if new user
+          window.location.href = "home.html"; 
+        })
+        .catch((error) => {
+          console.error("Google Sign-In Error:", error);
+          alert("Google Login failed: " + error.message);
+        });
+    }
+  </script>
+
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js')
+        .then((reg) => {
+          console.log("✅ Service Worker registered", reg);
+        })
+        .catch((err) => {
+          console.error("❌ Service Worker registration failed:", err);
+        });
+    }
+  </script>
+
+</body>
+</html>

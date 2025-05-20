@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Login Page</title>
+  <meta name="theme-color" content="#007bff" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <link rel="apple-touch-icon" href="assets/img/homescreenicon.png" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 100%; height: 100%;
+      background: black;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+    }
+
+    .swiper {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+    }
+
+    .swiper-slide {
+      width: 100%; height: 100%;
+      position: relative;
+    }
+
+    .main-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .swiper-pagination-bullets { bottom: 150px !important; }
+
+    .login-section {
+      position: absolute;
+      bottom: 45px; left: 50%;
+      transform: translateX(-50%);
+      display: flex; flex-direction: column;
+      align-items: center;
+      gap: 15px; /* Controls gap between all elements */
+      z-index: 10;
+      width: 280px;
+    }
+
+    /* New container for phone input with extra bottom margin */
+    .phone-input-wrapper {
+      margin-bottom: 20px; /* Extra space below phone input */
+      width: 100%;
+    }
+
+    .login-input-box {
+      display: flex; align-items: center;
+      background: white;
+      padding: 10px 15px;
+      border-radius: 19px;
+      width: 100%;
+      box-shadow: inset 0 0 0 2px #003366, 0 0 10px rgba(0, 51, 102, 0.3);
+      transition: box-shadow 0.3s ease;
+    }
+
+    .login-input-box:focus-within {
+      box-shadow: inset 0 0 0 2px #007bff, 0 0 10px rgba(0, 123, 255, 0.4);
+    }
+
+    .login-input-box img {
+      width: 24px; height: 16px;
+      margin-right: 8px;
+    }
+
+    .login-input-box input {
+      border: none;
+      outline: none;
+      margin-left: 5px;
+      flex: 1;
+      font-size: 16px;
+      background: transparent;
+    }
+
+    .login-btn-container {
+      width: 100%;
+      background-color: #003366;
+      border-radius: 40px;
+      padding: 2px;
+    }
+
+    .login-btn {
+      background: linear-gradient(to right, #ff416c, #ff4b2b);
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      font-size: 16px;
+      font-weight: bold;
+      width: 100%;
+      border-radius: 40px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.3);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .login-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      background: linear-gradient(to right, #cccccc, #999999);
+    }
+
+    .login-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    /* OTP Section */
+    .otp-section {
+      display: none;
+      width: 100%;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .otp-inputs {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    .otp-inputs input {
+      width: 40px;
+      height: 50px;
+      text-align: center;
+      font-size: 20px;
+      border: none;
+      border-radius: 10px;
+      background: white;
+      box-shadow: inset 0 0 0 2px #003366;
+    }
+
+    .otp-inputs input:focus {
+      box-shadow: inset 0 0 0 2px #007bff;
+    }
+
+    .otp-message {
+      color: white;
+      text-align: center;
+      font-size: 14px;
+      margin-top: 5px;
+    }
+
+    .error-message {
+      color: #ff4b2b;
+      text-align: center;
+      font-size: 14px;
+      height: 20px;
+    }
+
+    /* Desktop Styles */
+    @media (min-width: 768px) {
+      .login-section {
+        width: 380px; /* Wider login box for desktop */
+        bottom: 10%;  /* Position higher from bottom */
+        padding: 30px;
+        background-color: rgba(0, 0, 0, 0.3); /* Optional: slight background for better readability on complex images */
+        border-radius: 15px;
+      }
+
+      .login-input-box {
+        padding: 12px 18px; /* Slightly larger padding */
+      }
+
+      .login-input-box input {
+        font-size: 17px;
+      }
+
+      .login-btn {
+        padding: 14px 30px;
+        font-size: 17px;
+      }
+
+      .otp-inputs input {
+        width: 48px;   /* Slightly wider OTP inputs */
+        height: 55px;
+        font-size: 22px;
+      }
+
+      .otp-message {
+        font-size: 15px;
+      }
+
+      .swiper-pagination-bullets {
+        bottom: 40px !important; /* Adjust pagination position for desktop */
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Swiper Slides -->
+  <div class="swiper">
+    <div class="swiper-wrapper">
+      <div class="swiper-slide">
+        <picture>
+          <source media="(min-width: 768px)" srcset="assets/img/laplogimg1.png" />
+          <img src="assets/img/logimage1.png" class="main-image" />
+        </picture>
+      </div>
+      <div class="swiper-slide">
+        <picture>
+          <source media="(min-width: 768px)" srcset="assets/img/laplogimg2.png" />
+          <img src="assets/img/logimage2.png" class="main-image" />
+        </picture>
+      </div>
+      <div class="swiper-slide">
+        <picture>
+          <source media="(min-width: 768px)" srcset="assets/img/laplogimg3.png" />
+          <img src="assets/img/logimage3.png" class="main-image" />
+        </picture>
+      </div>
+    </div>
+    <div class="swiper-pagination"></div>
+  </div>
+
+  <!-- Login Section -->
+  <div class="login-section">
+    <div id="phoneSection">
+      <!-- Wrapped phone input in new container -->
+      <div class="phone-input-wrapper">
+        <div class="login-input-box">
+          <img src="assets/img/india_flag.jpg" alt="India" />
+          <span style="font-weight: bold;">+91</span>
+          <input type="tel" id="phoneInput" placeholder="Enter phone number" maxlength="10" />
+        </div>
+      </div>
+
+      <div class="login-btn-container">
+        <button class="login-btn" id="sendOtpBtn" disabled>SEND OTP</button>
+      </div>
+    </div>
+
+    <div id="otpSection" class="otp-section">
+      <div class="otp-message" id="otpMessage">OTP sent to +91 ••••• ••••</div>
+      
+      <div class="otp-inputs" id="otpInputs">
+        <input type="text" maxlength="1" pattern="[0-9]" inputmode="numeric">
+        <input type="text" maxlength="1" pattern="[0-9]" inputmode="numeric">
+        <input type="text" maxlength="1" pattern="[0-9]" inputmode="numeric">
+        <input type="text" maxlength="1" pattern="[0-9]" inputmode="numeric">
+        <input type="text" maxlength="1" pattern="[0-9]" inputmode="numeric">
+        <input type="text" maxlength="1" pattern="[0-9]" inputmode="numeric">
+      </div>
+
+      <div class="error-message" id="errorMessage"></div>
+
+      <div class="login-btn-container">
+        <button class="login-btn" id="verifyOtpBtn" disabled>VERIFY OTP</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+    import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyC62wo52XfJDOBnJc6VAQDDbse3a-KKy-k",
+      authDomain: "dhipycare.firebaseapp.com",
+      projectId: "dhipycare",
+      appId: "1:493427173597:web:379ad40ef8360df81ad334"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // DOM Elements
+    const phoneInput = document.getElementById("phoneInput");
+    const sendOtpBtn = document.getElementById("sendOtpBtn");
+    const verifyOtpBtn = document.getElementById("verifyOtpBtn");
+    const phoneSection = document.getElementById("phoneSection");
+    const otpSection = document.getElementById("otpSection");
+    const otpMessage = document.getElementById("otpMessage");
+    const errorMessage = document.getElementById("errorMessage");
+    const otpInputs = document.querySelectorAll('#otpInputs input');
+
+    let confirmationResult;
+
+    // Initialize reCAPTCHA
+    window.recaptchaVerifier = new RecaptchaVerifier(auth, 'sendOtpBtn', {
+      size: 'invisible',
+      callback: () => console.log("reCAPTCHA solved")
+    });
+
+    // Phone number validation
+    phoneInput.addEventListener("input", () => {
+      const number = phoneInput.value;
+      sendOtpBtn.disabled = !(number.length === 10 && /^[0-9]+$/.test(number));
+    });
+
+    // Send OTP
+    sendOtpBtn.addEventListener("click", async () => {
+      const phoneNumber = "+91" + phoneInput.value;
+      
+      try {
+        sendOtpBtn.disabled = true;
+        phoneInput.disabled = true;
+        
+        confirmationResult = await signInWithPhoneNumber(
+          auth, 
+          phoneNumber, 
+          window.recaptchaVerifier
+        );
+        // Store phone number in localStorage before redirect
+      localStorage.setItem("userPhone", phoneNumber);
+
+        // Show OTP section
+        otpMessage.textContent = `OTP sent to +91 ${phoneInput.value.slice(0, 5)}••••`;
+        phoneSection.style.display = "none";
+        otpSection.style.display = "flex";
+        otpInputs[0].focus();
+
+      } catch (error) {
+        console.error("Error sending OTP:", error);
+        errorMessage.textContent = "Failed to send OTP: " + error.message;
+        sendOtpBtn.disabled = false;
+        phoneInput.disabled = false;
+      }
+    });
+
+    // OTP Input Handling
+    otpInputs.forEach((input, index) => {
+      input.addEventListener('input', (e) => {
+        if (e.target.value.length === 1 && index < otpInputs.length - 1) {
+          otpInputs[index + 1].focus();
+        }
+        verifyOtpBtn.disabled = !isOtpComplete();
+      });
+      
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && !e.target.value && index > 0) {
+          otpInputs[index - 1].focus();
+        }
+      });
+    });
+
+    function isOtpComplete() {
+      return Array.from(otpInputs).every(input => input.value.length === 1);
+    }
+
+    // Verify OTP
+    verifyOtpBtn.addEventListener("click", async () => {
+      const otp = Array.from(otpInputs).map(input => input.value).join('');
+      
+      try {
+        verifyOtpBtn.disabled = true;
+        errorMessage.textContent = "";
+        
+        const result = await confirmationResult.confirm(otp);
+        const user = result.user;
+
+        // Firestore check
+        const db = getFirestore(app);
+        const userDocRef = doc(db, "users", user.uid);
+        const userDocSnap = await getDoc(userDocRef);
+
+        if (userDocSnap.exists()) {
+          // User exists, go to home
+          window.location.href = "home.html";
+        } else {
+          // New user, go to info
+          window.location.href = "info.html";
+        }
+      } catch (error) {
+        console.error("Error verifying OTP:", error);
+        errorMessage.textContent = "Invalid OTP. Please try again.";
+        verifyOtpBtn.disabled = false;
+      }
+    });
+
+    // Initialize Swiper
+    const swiper = new Swiper('.swiper', {
+      loop: true,
+      pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+      },
+      autoplay: { delay: 3000 },
+      effect: 'slide',
+    });
+
+    // Service Worker
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("service-worker.js")
+        .then(() => console.log("✅ Service Worker Registered"))
+        .catch((error) => console.error("❌ SW Registration failed:", error));
+    }
+  </script>
+</body>
+</html>

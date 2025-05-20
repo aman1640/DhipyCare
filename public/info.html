@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Complete Your Profile | DhipyCare</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="css/styles.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #6c63ff;
+      --secondary: #ff6584;
+      --text: #2d3748;
+      --gray: #e2e8f0;
+      --light-gray: #f7fafc;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    body {
+      background-color: var(--light-gray);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .profile-container {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+      width: 100%;
+      max-width: 450px;
+      padding: 30px;
+    }
+    
+    .profile-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .profile-header h1 {
+      color: var(--primary);
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+    
+    .profile-header p {
+      color: #718096;
+      font-size: 14px;
+    }
+    
+    .profile-section {
+      margin-bottom: 25px;
+    }
+    
+    .profile-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid var(--gray);
+    }
+    
+    .profile-item.completed {
+      opacity: 0.7;
+    }
+    
+    .profile-item .icon {
+      margin-right: 15px;
+      font-size: 20px;
+      min-width: 24px;
+      text-align: center;
+    }
+    
+    .profile-item .content {
+      flex: 1;
+    }
+    
+    .profile-item h3 {
+      font-size: 16px;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+    
+    .profile-item input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--gray);
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+      transition: border 0.3s;
+    }
+    
+    .profile-item input:focus {
+      border-color: var(--primary);
+    }
+    
+    .profile-item .status {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid var(--gray);
+      margin-left: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+    }
+    
+    .profile-item .status.completed {
+      background-color: var(--primary);
+      border-color: var(--primary);
+      color: white;
+    }
+    
+    .gender-options {
+      display: flex;
+      gap: 15px;
+      margin-top: 10px;
+    }
+    
+    .gender-option {
+      flex: 1;
+    }
+    
+    .gender-option input {
+      display: none;
+    }
+    
+    .gender-option label {
+      display: block;
+      padding: 12px;
+      text-align: center;
+      border: 1px solid var(--gray);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .gender-option input:checked + label {
+      border-color: var(--primary);
+      background-color: rgba(108, 99, 255, 0.1);
+    }
+    
+    .continue-btn {
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      color: white;
+      border: none;
+      width: 100%;
+      padding: 15px;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+      box-shadow: 0 4px 10px rgba(108, 99, 255, 0.3);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .continue-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(108, 99, 255, 0.4);
+    }
+    
+    .continue-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+    
+    .phone-display {
+      background-color: var(--light-gray);
+      padding: 10px;
+      border-radius: 8px;
+      margin-top: 5px;
+      font-weight: 500;
+    }
+    
+    .loader {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 8px;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="profile-container">
+    <div class="profile-header">
+      <h1>Complete Your Profile</h1>
+      <p>Let's Build Your Perfect Profile</p>
+    </div>
+    
+    <div class="profile-section">
+      <p>Just one step away from a personalized experience — fill out your profile.</p>
+    </div>
+    
+    <div class="profile-section">
+      <div class="profile-item">
+        <div class="icon">👤</div>
+        <div class="content">
+          <h3>Enter Full Name</h3>
+          <input type="text" id="fullName" placeholder="Your full name">
+        </div>
+        <div class="status" id="nameStatus"></div>
+      </div>
+      
+      <div class="profile-item">
+        <div class="icon">📧</div>
+        <div class="content">
+          <h3>Enter Email</h3>
+          <input type="email" id="email" placeholder="your.email@example.com">
+        </div>
+        <div class="status" id="emailStatus"></div>
+      </div>
+      
+      <div class="profile-item">
+        <div class="icon">🎂</div>
+        <div class="content">
+          <h3>Enter Date of Birth</h3>
+          <input type="date" id="dob">
+        </div>
+        <div class="status" id="dobStatus">🌟</div>
+      </div>
+      
+      <div class="profile-item completed">
+        <div class="icon">📱</div>
+        <div class="content">
+          <h3>Phone Number</h3>
+          <div class="phone-display" id="phoneDisplay"></div>
+        </div>
+        <div class="status completed">✓</div>
+      </div>
+    </div>
+    
+    <div class="profile-section">
+      <h3>Gender</h3>
+      <div class="gender-options">
+        <div class="gender-option">
+          <input type="radio" name="gender" id="male" value="male">
+          <label for="male">Male</label>
+        </div>
+        <div class="gender-option">
+          <input type="radio" name="gender" id="female" value="female">
+          <label for="female">Female</label>
+        </div>
+        <div class="gender-option">
+          <input type="radio" name="gender" id="other" value="other">
+          <label for="other">Other</label>
+        </div>
+      </div>
+    </div>
+    
+    <button class="continue-btn" id="continueBtn">Continue</button>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyC62wo52XfJDOBnJc6VAQDDbse3a-KKy-k",
+      authDomain: "dhipycare.firebaseapp.com",
+      projectId: "dhipycare",
+      appId: "1:493427173597:web:379ad40ef8360df81ad334"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    // DOM Elements
+    const continueBtn = document.getElementById('continueBtn');
+    const phoneDisplay = document.getElementById('phoneDisplay');
+    const fullNameInput = document.getElementById('fullName');
+    const emailInput = document.getElementById('email');
+    const dobInput = document.getElementById('dob');
+    const nameStatus = document.getElementById('nameStatus');
+    const emailStatus = document.getElementById('emailStatus');
+    const dobStatus = document.getElementById('dobStatus');
+
+    // Load phone number from localStorage
+    const phoneNumber = localStorage.getItem('userPhone') || '+91XXXXXXXXXX';
+    phoneDisplay.textContent = phoneNumber;
+
+    // Input validation
+    function validateInputs() {
+      const nameValid = fullNameInput.value.trim().length > 0;
+      const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value);
+      const dobValid = dobInput.value !== '';
+
+      nameStatus.className = 'status ' + (nameValid ? 'completed' : '');
+      emailStatus.className = 'status ' + (emailValid ? 'completed' : '');
+      dobStatus.textContent = dobValid ? '✓' : '🌟';
+      dobStatus.className = 'status ' + (dobValid ? 'completed' : '');
+      
+      continueBtn.disabled = !(nameValid && emailValid && dobValid);
+      
+      return nameValid && emailValid && dobValid;
+    }
+
+    // Real-time validation
+    [fullNameInput, emailInput, dobInput].forEach(input => {
+      input.addEventListener('input', validateInputs);
+    });
+
+    // Save profile data
+    continueBtn.addEventListener('click', async () => {
+      if (!validateInputs()) {
+        alert('Please complete all required fields');
+        return;
+      }
+
+      const gender = document.querySelector('input[name="gender"]:checked')?.value || '';
+
+      try {
+        continueBtn.disabled = true;
+        continueBtn.innerHTML = '<span class="loader"></span> Saving...';
+
+        const user = auth.currentUser;
+        if (!user) throw new Error('User not authenticated');
+
+        // Prepare user data
+        const userData = {
+          fullName: fullNameInput.value.trim(),
+          email: emailInput.value.trim(),
+          dob: dobInput.value,
+          gender: gender,
+          phoneNumber: phoneNumber,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+          lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+        };
+
+        // Save to Firestore
+        await db.collection('users').doc(user.uid).set(userData, { merge: true });
+        
+        // Store in localStorage for immediate access
+        localStorage.setItem('userProfile', JSON.stringify(userData));
+        
+        // Redirect to home page
+        window.location.href = 'home.html';
+        
+      } catch (error) {
+        console.error('Error saving profile:', error);
+        alert('Failed to save profile. Please try again.\nError: ' + error.message);
+        continueBtn.disabled = false;
+        continueBtn.textContent = 'Continue';
+      }
+    });
+
+    // Initialize validation on load
+    window.onload = validateInputs;
+  </script>
+</body>
+</html>

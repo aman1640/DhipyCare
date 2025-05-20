@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Login Page</title>
+  <meta name="theme-color" content="#007bff" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <link rel="apple-touch-icon" href="assets/img/homescreenicon.png" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 100%; height: 100%;
+      background: black;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+    }
+
+    .swiper {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+    }
+
+    .swiper-slide {
+      width: 100%; height: 100%;
+      position: relative;
+    }
+
+    .main-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .swiper-pagination-bullets { bottom: 150px !important; }
+
+    .login-section {
+      position: absolute;
+      bottom: 45px; left: 50%;
+      transform: translateX(-50%);
+      display: flex; flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      z-index: 10;
+    }
+
+    .login-input-box {
+      display: flex; align-items: center;
+      background: white;
+      padding: 10px 15px;
+      border-radius: 19px;
+      width: 280px;
+      box-shadow: inset 0 0 0 2px #003366, 0 0 10px rgba(0, 51, 102, 0.3);
+      transition: box-shadow 0.3s ease;
+    }
+
+    .login-input-box:focus-within {
+      box-shadow: inset 0 0 0 2px #007bff, 0 0 10px rgba(0, 123, 255, 0.4);
+    }
+
+    .login-input-box img {
+      width: 24px; height: 16px;
+      margin-right: 8px;
+    }
+
+    .login-input-box input {
+      border: none;
+      outline: none;
+      margin-left: 5px;
+      flex: 1;
+      font-size: 16px;
+      background: transparent;
+    }
+
+    .login-btn-container {
+      width: 280px;
+      background-color: #003366;
+      border-radius: 40px;
+      padding: 2px;
+    }
+
+    .login-btn {
+      background: linear-gradient(to right, #ff416c, #ff4b2b);
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      font-size: 16px;
+      font-weight: bold;
+      width: 100%;
+      border-radius: 40px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.3);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .login-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      background: linear-gradient(to right, #cccccc, #999999);
+    }
+
+    .login-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    #otpInput {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Swiper Slides -->
+  <div class="swiper">
+    <div class="swiper-wrapper">
+      <div class="swiper-slide">
+        <picture>
+          <source media="(min-width: 768px)" srcset="assets/img/laplogimg1.png" />
+          <img src="assets/img/logimage1.png" class="main-image" />
+        </picture>
+      </div>
+      <div class="swiper-slide">
+        <picture>
+          <source media="(min-width: 768px)" srcset="assets/img/laplogimg2.png" />
+          <img src="assets/img/logimage2.png" class="main-image" />
+        </picture>
+      </div>
+      <div class="swiper-slide">
+        <picture>
+          <source media="(min-width: 768px)" srcset="assets/img/laplogimg3.png" />
+          <img src="assets/img/logimage3.png" class="main-image" />
+        </picture>
+      </div>
+    </div>
+    <div class="swiper-pagination"></div>
+  </div>
+
+  <!-- Login Input -->
+  <div class="login-section">
+    <!-- Phone Number Input -->
+    <div class="login-input-box" id="phoneInputBox">
+      <img src="assets/img/india_flag.jpg" alt="India" />
+      <span style="font-weight: bold;">+91</span>
+      <input type="tel" id="phoneInput" placeholder="Enter phone number" maxlength="10" />
+    </div>
+
+    <!-- OTP Input -->
+    <div class="login-input-box" id="otpInputBox">
+      <input type="text" id="otpInput" placeholder="Enter OTP" maxlength="6" />
+    </div>
+
+    <!-- Continue Button -->
+    <div class="login-btn-container">
+      <button class="login-btn" id="continueBtn" disabled>CONTINUE</button>
+      <button class="login-btn" id="verifyBtn" style="display: none;">VERIFY OTP</button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+    import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, confirmVerificationCode } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyC62wo52XfJDOBnJc6VAQDDbse3a-KKy-k",
+      authDomain: "dhipycare.firebaseapp.com",
+      projectId: "dhipycare",
+      appId: "1:493427173597:web:379ad40ef8360df81ad334"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const phoneInput = document.getElementById("phoneInput");
+    const continueBtn = document.getElementById("continueBtn");
+    const otpInput = document.getElementById("otpInput");
+    const otpInputBox = document.getElementById("otpInputBox");
+    const phoneInputBox = document.getElementById("phoneInputBox");
+    const verifyBtn = document.getElementById("verifyBtn");
+
+    let confirmationResult;
+
+    // ✅ reCAPTCHA setup on load
+    window.recaptchaVerifier = new RecaptchaVerifier(auth, 'continueBtn', {
+      size: 'invisible',
+      callback: () => {
+        console.log("reCAPTCHA solved");
+      }
+    });
+
+    phoneInput.addEventListener("input", () => {
+      const number = phoneInput.value;
+      continueBtn.disabled = !(number.length === 10 && /^[0-9]+$/.test(number));
+    });
+
+    continueBtn.addEventListener("click", () => {
+      const phoneNumber = "+91" + phoneInput.value;
+      const appVerifier = window.recaptchaVerifier;
+
+      signInWithPhoneNumber(auth, phoneNumber, appVerifier)
+        .then((result) => {
+          confirmationResult = result;
+          phoneInputBox.style.display = 'none';
+          otpInputBox.style.display = 'block';
+          verifyBtn.style.display = 'block';
+        })
+        .catch((error) => {
+          alert("❌ Login failed: " + error.message);
+        });
+    });
+
+    verifyBtn.addEventListener("click", () => {
+      const otp = otpInput.value;
+
+      confirmationResult.confirm(otp)
+        .then((result) => {
+          localStorage.setItem("phoneNumber", result.user.phoneNumber);
+          window.location.href = "home.html"; // Redirect after successful login
+        })
+        .catch((error) => {
+          alert("❌ OTP verification failed: " + error.message);
+        });
+    });
+  </script>
+
+  <script>
+    const swiper = new Swiper('.swiper', {
+      loop: true,
+      pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+      },
+      autoplay: { delay: 3000 },
+      effect: 'slide',
+    });
+
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("service-worker.js")
+        .then(() => console.log("✅ Service Worker Registered"))
+        .catch((error) => console.error("❌ SW Registration failed:", error));
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test User Profile Fetch</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f7f7f7; margin: 0; padding: 0; }
+    .container { max-width: 400px; margin: 40px auto; background: #fff; border-radius: 10px; box-shadow: 0 2px 8px #0001; padding: 32px 24px; text-align: center; }
+    #profile-photo img { width: 80px; height: 80px; border-radius: 50%; margin-bottom: 12px; }
+    #profile-name { font-size: 1.3em; font-weight: bold; margin-bottom: 8px; }
+    #profile-email, #profile-phone { color: #444; margin-bottom: 6px; }
+    #error { color: #c00; margin-top: 18px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>User Profile (Test)</h2>
+    <div id="profile-photo"></div>
+    <div id="profile-name"></div>
+    <div id="profile-email"></div>
+    <div id="profile-phone"></div>
+    <div id="error"></div>
+  </div>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script>
+    // Your Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyC62wo52XfJDOBnJc6VAQDDbse3a-KKy-k",
+      authDomain: "dhipycare.firebaseapp.com",
+      projectId: "dhipycare",
+      appId: "1:493427173597:web:379ad40ef8360df81ad334"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    function showError(msg) {
+      document.getElementById('error').textContent = msg;
+    }
+
+    auth.onAuthStateChanged(function(user) {
+      if (user) {
+        db.collection('users').doc(user.uid).get().then(function(doc) {
+          if (doc.exists) {
+            const data = doc.data();
+            document.getElementById('profile-photo').innerHTML = data.photoURL
+              ? `<img src="${data.photoURL}">` : '';
+            document.getElementById('profile-name').textContent = data.fullName || '';
+            document.getElementById('profile-email').textContent = data.email || '';
+            document.getElementById('profile-phone').textContent = data.phoneNumber || '';
+            showError('');
+          } else {
+            showError('User data not found in Firestore.');
+          }
+        }).catch(function(err) {
+          showError('Error fetching user data: ' + err.message);
+        });
+      } else {
+        showError('Not logged in. Please login first.');
+      }
+    });
+  </script>
+</body>
+</html>
