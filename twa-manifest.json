@@ -1,0 +1,48 @@
+{
+  "packageId": "app.web.dhipycare.twa",
+  "host": "dhipycare.web.app",
+  "name": "DhipyCar",
+  "launcherName": "DhipyCar",
+  "display": "fullscreen",
+  "themeColor": "# #0000FF",
+  "themeColorDark": "#000000",
+  "navigationColor": "#000000",
+  "navigationColorDark": "#000000",
+  "navigationDividerColor": "#000000",
+  "navigationDividerColorDark": "#000000",
+  "backgroundColor": "#0000FF",
+  "enableNotifications": true,
+  "startUrl": "/",
+  "iconUrl": "https://dhipycare.web.app/assets/img/homescreenicon.png",
+  "maskableIconUrl": "https://dhipycare.web.app/assets/img/homescreenicon.png",
+  "splashScreenFadeOutDuration": 300,
+  "signingKey": {
+    "path": "C:\\DhipCare\\code\\dhipycar\\android.keystore",
+    "alias": "android"
+  },
+  "appVersionName": "1",
+  "appVersionCode": 1,
+  "shortcuts": [],
+  "generatorApp": "bubblewrap-cli",
+  "webManifestUrl": "https://dhipycare.web.app/manifest.json",
+  "fallbackType": "customtabs",
+  "features": {
+    "locationDelegation": {
+      "enabled": true
+    }
+  },
+  "alphaDependencies": {
+    "enabled": false
+  },
+  "enableSiteSettingsShortcut": true,
+  "isChromeOSOnly": false,
+  "isMetaQuest": false,
+  "fullScopeUrl": "https://dhipycare.web.app/",
+  "minSdkVersion": 21,
+  "orientation": "portrait",
+  "fingerprints": [],
+  "additionalTrustedOrigins": [],
+  "retainedBundles": [],
+  "protocolHandlers": [],
+  "appVersion": "1"
+}

@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#007bff" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#3A5A9F" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="DhipyCare" />
@@ -14,11 +14,13 @@
 
   <style>
     /* Reset and full screen layout */
-    body, html {
+    html, body {
       margin: 0;
       padding: 0;
-      height: 100%;
+      height: 100vh;
+      width: 100vw;
       overflow: hidden;
+      box-sizing: border-box;
       font-family: Arial, sans-serif;
     }
 
@@ -112,6 +114,11 @@
         display: none; /* Hide center button on mobile */
       }
     }
+
+    #mainContent, #intro {
+      min-height: 100vh;
+      min-width: 100vw;
+    }
   </style>
 </head>
 <body>
@@ -194,7 +201,7 @@
             redirectToLogin();
           });
           // Backup timeout (e.g., 7 seconds)
-          videoRedirectTimeoutId = setTimeout(redirectToLogin, 7000);
+          videoRedirectTimeoutId = setTimeout(redirectToLogin, 2000);
         } else {
           // No video element, or it failed to load, redirect to login immediately
           console.log("No video element found or video error, redirecting to login page.");
@@ -231,6 +238,22 @@
           console.error("❌ Service Worker registration failed:", err);
         });
     }
+  </script>
+
+  <script>
+    // Example: Save and restore a form field (phone number) using localStorage
+    document.addEventListener('DOMContentLoaded', function() {
+      var phoneInput = document.querySelector('input[type="tel"]');
+      if (phoneInput) {
+        // Restore value
+        var saved = localStorage.getItem('phone');
+        if (saved) phoneInput.value = saved;
+        // Save on change
+        phoneInput.addEventListener('input', function() {
+          localStorage.setItem('phone', phoneInput.value);
+        });
+      }
+    });
   </script>
 
 </body>

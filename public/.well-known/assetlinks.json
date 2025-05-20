@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "app.web.dhipycare.twa",
+      "sha256_cert_fingerprints": [
+        "F5:0C:E6:14:50:C4:4B:72:7D:78:51:12:70:51:71:CE:F5:2A:96:D9:C7:5E:FC:BC:B2:9F:CD:AB:69:4E:D7:EB"
+      ]
+    }
+  }
+] 

@@ -1,6 +1,28 @@
 {
   "dependencies": {
+    "@capacitor/android": "^7.2.0",
     "cors": "^2.8.5",
     "razorpay": "^2.9.6"
+  },
+  "name": "dhipycar",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aman1640/DhipyCare.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aman1640/DhipyCare/issues"
+  },
+  "homepage": "https://github.com/aman1640/DhipyCare#readme",
+  "description": "",
+  "devDependencies": {
+    "@bubblewrap/cli": "^1.22.5"
   }
 }
