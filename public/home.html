@@ -14,7 +14,7 @@ body {
 }
 
 header {
-    background-color: #000000; 
+    background-color: #060606; 
     color: white;
     padding: 15px 25px; /* Restored padding */
     position: sticky;
@@ -1270,6 +1270,50 @@ main.hidden {
             </section>
         </div> <!-- End of homeServiceBrowseView -->
 
+        <!-- Health Issue Form View -->
+        <div id="healthIssueFormView" style="display: none;">
+            <div class="account-page-header">
+                <button class="back-btn" id="backToBrowseViewBtn"><i class="fas fa-arrow-left"></i><span class="back-btn-text"> Back</span></button>
+                <h2 class="doctor-browse-view-title" id="healthIssueFormTitle">Book a Consultation</h2>
+            </div>
+            <form id="healthIssueForm" class="health-issue-form" autocomplete="off">
+                <div class="form-group">
+                    <label for="patientName">Patient Name</label>
+                    <input type="text" id="patientName" name="patientName" required>
+                </div>
+                <div class="form-group">
+                    <label for="patientAge">Age</label>
+                    <input type="number" id="patientAge" name="patientAge" min="0" max="120" required>
+                </div>
+                <div class="form-group">
+                    <label for="patientGender">Gender</label>
+                    <select id="patientGender" name="patientGender" required>
+                        <option value="">Select</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="patientPhone">Phone Number</label>
+                    <input type="tel" id="patientPhone" name="patientPhone" pattern="[0-9]{10}" required>
+                </div>
+                <div class="form-group">
+                    <label for="patientAddress">Address</label>
+                    <textarea id="patientAddress" name="patientAddress" rows="2" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="paymentMethod">Payment Method</label>
+                    <select id="paymentMethod" name="paymentMethod" required>
+                        <option value="">Select</option>
+                        <option value="cash">Cash</option>
+                        <option value="upi">UPI</option>
+                        <option value="card">Card</option>
+                    </select>
+                </div>
+                <button type="submit" class="confirm-location-btn" style="margin-top:20px;">Submit</button>
+            </form>
+        </div>
     </main>
 
     <div class="account-page" id="accountPage">
@@ -2224,18 +2268,58 @@ document.addEventListener('DOMContentLoaded', () => {
     // The initGoogleMap function will run once the API script is loaded.
     // We then need to decide if the modal should be shown by default in initGoogleMap.
 
-    // Redirect to healthform.html with selected issue
+    // --- Health Issue Form Logic ---
+    const healthIssueFormView = document.getElementById('healthIssueFormView');
+    const healthIssueForm = document.getElementById('healthIssueForm');
+    const backToBrowseViewBtn = document.getElementById('backToBrowseViewBtn');
+    const patientAddressInput = document.getElementById('patientAddress');
+    const healthIssueFormTitle = document.getElementById('healthIssueFormTitle');
+    let lastBrowseView = null;
+
+    // Show form when any concern-item is clicked
     document.querySelectorAll('.concern-item').forEach(item => {
         item.addEventListener('click', function() {
+            // Find which browse view is currently visible
+            if (doctorBrowseView && doctorBrowseView.style.display === 'block') lastBrowseView = doctorBrowseView;
+            else if (nurseBrowseView && nurseBrowseView.style.display === 'block') lastBrowseView = nurseBrowseView;
+            else if (homeServiceBrowseView && homeServiceBrowseView.style.display === 'block') lastBrowseView = homeServiceBrowseView;
+            else lastBrowseView = null;
+
+            // Set form title to the selected health issue
             const issue = item.querySelector('p') ? item.querySelector('p').textContent : '';
-            if (issue) {
-                window.location.href = `healthform.html?issue=${encodeURIComponent(issue)}`;
-            } else {
-                window.location.href = 'healthform.html';
-            }
+            healthIssueFormTitle.textContent = issue ? `Book for: ${issue}` : 'Book a Consultation';
+
+            // Prefill address from localStorage if available
+            const savedAddress = localStorage.getItem('userSelectedLocation');
+            if (savedAddress) patientAddressInput.value = savedAddress;
+            else patientAddressInput.value = '';
+
+            // Hide all browse views and show form
+            [doctorBrowseView, nurseBrowseView, homeServiceBrowseView, homePageDefaultContent, accountPage].forEach(v => { if(v) v.style.display = 'none'; });
+            if (healthIssueFormView) healthIssueFormView.style.display = 'block';
+            window.scrollTo(0,0);
         });
     });
 
+    // Back button logic
+    if (backToBrowseViewBtn) {
+        backToBrowseViewBtn.addEventListener('click', function() {
+            if (healthIssueFormView) healthIssueFormView.style.display = 'none';
+            if (lastBrowseView) lastBrowseView.style.display = 'block';
+        });
+    }
+
+    // (Optional) Handle form submit
+    if (healthIssueForm) {
+        healthIssueForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Form submitted! (You can handle the data as needed)');
+            // Optionally, reset form and go back
+            healthIssueForm.reset();
+            if (healthIssueFormView) healthIssueFormView.style.display = 'none';
+            if (lastBrowseView) lastBrowseView.style.display = 'block';
+        });
+    }
 });
     </script>
     <!-- Firebase SDKs -->
